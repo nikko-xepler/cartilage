@@ -1,0 +1,190 @@
+=wrap
+  &:after
+    content: ""
+    display: table
+    clear: both
+
+@function merge-list($input, $separator)
+  $merged: ""
+  @if type-of($input) == list
+    @for $i from 1 through length($input)
+      $merged: $merged + nth($input, $i)
+      @if $i != length($input)
+        $merged: $merged + $separator
+  @else
+    $merged: $input
+  @return unquote($merged)
+
+@function strip-unit($num)
+  @return $num / ($num * 0 + 1)
+
+// Make-String
+// Helper function to convert the $input to a string.
+// Used in the "is-pixel" helper function, conversion to strings allows
+// slicing to check the units at the end of the number since all numbers,
+// without or without units, are consider to be of type "number" in Sass.
+@function make-string($input)
+  @if type-of($input) != string
+  @return #{unquote($input)}
+
+// Is-Pixel
+// Helper function to check if a number has the pixel unit.
+// Converts the $input to a string in order to slice and check the last
+// two characters.
+// NOTE: this is pointless, due to the existence of the Sass "unit()" function.
+// This function is also not being used anywhere, and so should be removed from
+// the package before any sort of public launch.
+@function is-pixel($input)
+  @if str-slice(make-string($input), -2) == "px"
+    @return true
+  @else
+    @return false
+
+/// Has-Item
+// Helper function to check for the existence of an $item in a $list; if the $list is not a
+// list, checks if the $list is equal to the $item
+@function has-item($list, $item)
+  @if type-of($list) == list
+    @each $i in $list
+      @if $i == $item
+        @return $i
+    @debug "no match found"
+    @return false
+  @else
+    @if $list == $item
+      @return $list
+    @return false
+
+// Function to loop through a $list and return the $nth item that is of $type
+@function nth-of-type($list, $type, $nth: 1)
+  $i: 0
+  @if length($list) > 0
+    @each $item in $list
+      @if type-of($item) == $type
+        $i: $i + 1
+        @if $i == $nth
+          @return $item
+  @return false
+
+// PROBLEM???
+// Function to loop through a $list and check for the existence of
+// the $value in the $list
+@function list-has-value($list, $value)
+  @if length($list) > 0
+    @each $item in $list
+      @if $item == $value
+        @return true
+  @return false
+
+// Function to loop through a map and return the key associated with
+// a matching value.
+@function map-has-value($map, $input)
+  // Loop through the keys and values in the map
+  @each $key, $value in $map
+    // If the input is equal to the value in the loop
+    @if $input == $value
+      @return $key
+  // If the loop completes without finding a match, return false
+  @return false
+
+// Function to loop through any list of maps ($maps) and find the first one that
+// has $key with $value, returns index of matching list
+@function maps-match($maps, $key, $value)
+  @each $map in $maps
+    @if map-get($map, $key) == $value
+      @return index($maps, $map)
+  @return false
+
+// author: Hugo Giraudel
+// Casts a string into a number
+@function to-number($value)
+  @if type-of($value) == "number"
+    @return $value
+  @else if type-of($value) != "string"
+    @warn "Value for `to-number` should be a number or a string."
+    @return false
+  $result: 0
+  $digits: 0
+  $minus: str-slice($value, 1, 1) == "-"
+  $numbers: ("0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9)
+  @for $i from if($minus, 2, 1) through str-length($value)
+    $character: str-slice($value, $i, $i)
+    @if not (index(map-keys($numbers), $character) or $character == ".")
+      @return to-length(if($minus, -$result, $result), str-slice($value, $i))
+    @if $character == "."
+      $digits: 1
+    @else if $digits == 0
+      $result: $result * 10 + map-get($numbers, $character)
+    @else
+      $digits: $digits * 10
+      $result: $result + map-get($numbers, $character) / $digits
+  @return if($minus, -$result, $result)
+
+@function is-number($input)
+  @if type-of($input) == "number"
+    @return true
+  @else if type-of($input) != "string"
+    @warn "Value for `is-number` should be a number or a string."
+    @return false
+  $minus: str-slice($input, 1, 1) == "-"
+  $numbers: ("0": 0, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9)
+  @for $i from if($minus, 2, 1) through str-length($input)
+    $character: str-slice($input, $i, $i)
+    @if not (index(map-keys($numbers), $character) or $character == ".")
+      @return false
+  @return true
+
+// Function to split strings into lists
+@function str-split($string, $separator: "none")
+  @if type-of($string) != "string"
+    @warn "`str-split` function expecting a string for $string; #{type-of($string)} given."
+    @return false
+  @if type-of($separator) != "string"
+    @warn "`str-split` function expecting a string for $separator; #{type-of($separator)} given."
+    @return false
+  @if str-length($separator) > 1
+    @warn "`str-split` function expecting no more than one charater for $separator; #{str-length($separator)} given"
+    @return false
+  $result: ()
+  $from_i: 1
+  @for $i from 1 through str-length($string)
+    @if $separator == "none"
+      $result: append($result, str-slice($string, $i, $i))
+    @else
+      @if str-slice($string, $i, $i) == $separator
+        $result: append($result, str-slice($string, $from_i, $i - 1))
+        $from_i: $i + 1
+      @else if $i == str-length($string)
+        $result: append($result, str-slice($string, $from_i, $i))
+  @return $result
+
+=rem($rule, $val)
+  @if type-of($val) == list
+    $rem-list: ()
+    @each $v in $val
+      @if type-of($v) == number
+        $rem-val: strip-unit($v) / 16 * 1rem
+        $rem-list: append($rem-list, $rem-val)
+      @else
+        $rem-list: append($rem-list, $v)
+    #{$rule}: merge-list($val, " ")
+    #{$rule}: merge-list($rem-list, " ")
+  @else
+    $rem-val: strip-unit($val) / 16 * 1rem
+    #{$rule}: $val
+    #{$rule}: $rem-val
+
+@function multi-media($args)
+  $output: ""
+  $first: true
+  @each $arg in $args
+    @if $first == false
+      $output: $output + ", "
+    $output: $output + $arg
+    $first: false
+  @return unquote($output)
+
+=transition($args)
+  -webkit-transition: merge-list($args, ", ")
+  -moz-transition: merge-list($args, ", ")
+  transition: merge-list($args, ", ")
