@@ -1,0 +1,29 @@
+{
+  "name": "cartilage",
+  "version": "1.0.0",
+  "homepage": "https://github.com/nikko-xepler/cartilage",
+  "authors": [
+    "niko <nikko@xepler.com>"
+  ],
+  "description": "A Sass-based grid system for building lightweight responsive grids",
+  "main": "sass/cartilage.sass",
+  "keywords": [
+    "sass",
+    "scss",
+    "css",
+    "responsive",
+    "grid"
+  ],
+  "license": "UNLICENSE",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "/*.html",
+    ".sass-cache",
+    ".gulpfile.js",
+    "dist"
+  ]
+}
