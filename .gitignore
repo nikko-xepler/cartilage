@@ -3,3 +3,4 @@ notes/
 dist/css/
 node_modules
 .sass-cache
+.gulpfile.js
