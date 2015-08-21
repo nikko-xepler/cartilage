@@ -1,9 +1,7 @@
 var gulp = require('gulp');
-var gutil = require('gulp-util');
 var sass = require('gulp-sass');
 var rename = require('gulp-rename');
 var autoprefixer = require('gulp-autoprefixer');
-var browserSync = require('browser-sync').create();
 var exec = require('child_process').exec;
 var converter = require('sass-convert');
 var sassdoc = require('sassdoc');
@@ -26,6 +24,7 @@ gulp.task('sass', function() {
     // .pipe(browserSync.stream());
 });
 
+// Convert SASS to SCSS
 gulp.task('sass-to-scss', function(){
     gulp.src('sass/**/*.+(sass|scss)')
         .pipe(converter({
@@ -37,6 +36,7 @@ gulp.task('sass-to-scss', function(){
     return
 });
 
+// Rebuild documentation
 gulp.task('sassdoc', ['sass-to-scss'], function(){
     gulp.src('scss/**/*.scss')
         .pipe(sassdoc({
@@ -45,6 +45,7 @@ gulp.task('sassdoc', ['sass-to-scss'], function(){
     return
 });
 
+// Watch the main sass folder for changes
 gulp.task('watch-sass', function() {
     gulp.watch(SASSinput, ['sass','sassdoc'])
 })
