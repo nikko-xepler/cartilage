@@ -1,5 +1,5 @@
 notes/
-/*.html
+*/*.html
 dist/css/
 node_modules
 .sass-cache
