@@ -45,7 +45,22 @@ gulp.task('sassdoc', ['sass-to-scss'], function(){
     return
 });
 
+// Convert and rebuild documentation concurrently
+gulp.task('sass-convert-sassdoc', function(){
+    return gulp.src('sass/**/*.+(sass)')
+        .pipe(converter({
+            from: 'sass',
+            to: 'scss',
+            rename: true,
+        }))
+        .pipe(gulp.dest('scss'));
+});
+
 // Watch the main sass folder for changes
 gulp.task('watch-sass', function() {
-    gulp.watch(SASSinput, ['sass','sassdoc'])
+    gulp.watch(SASSinput, ['sass'])
+})
+
+gulp.task('watch-sassdoc', function() {
+    gulp.watch(SASSinput, ['sass-convert-sassdoc'])
 })

@@ -2,6 +2,17 @@
 $column-number: 12 !default;
 $gutter-width: 30px !default;
 $active-media: false;
+$default-row-behavior: default;
+
+// Mixin to set rows to behave as wrappers and have a max-width. This will also
+// cause them to not have a negative left and right margin either, so columns
+// will not be aligned with the siblings of the row.
+/// @param {String} $behavior [default] - `wrapper` or `default`
+@mixin reset-row-behavior($behavior: default) {
+  @if $behavior == "default" or $behavior == "wrapper" {
+    $default-row-behavior: $behavior !global;
+  }
+}
 
 // Other variables
 $breakpoints: ();
@@ -118,13 +129,21 @@ $word-ratios: ("half": 0.5, "one-half": 0.5, "third": 0.33333, "one-third": 0.33
   @extend %wrapper !optional;
 }
 
-/// Mixin to designate a selector as a row. Rows have a `max-width`
-/// that they inherit from the breakpoints created with the `set-breakpoint`
-/// mixin. Rows also have the `wrap` mixin (aka `clearfix`), so rows with
-/// columns will self-clear.
+/// Mixin to designate a selector as a row. By default, rows do not have a
+/// max-width, so they need to be nested inside of an element that is designated
+/// as a `wrapper`. Rows also have the `wrap` mixin (aka `clearfix`), so rows
+/// with columns will self-clear.
+///
+/// **Deprecated Behavior:**
+///
+/// Rows can have a `max-width` and behave like a `wrapper` if the
+/// `row-behavior` mixin is included with the parameter 'wrapper'. See the
+/// `row-behavior` mixin for more details.
 /// @example
 ///   // This row will change its max-width based on the screen size, based
 ///   // on the max-widths specified for the breakpoints
+///   @include row-behavior('wrapper')
+///
 ///   .example-class1
 ///       @include row
 ///
@@ -137,18 +156,24 @@ $word-ratios: ("half": 0.5, "one-half": 0.5, "third": 0.33333, "one-third": 0.33
   @include wrap;
   display: block;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  // If 'full' is passed as a parameter, ignore wrapper min-widths
-  // Otherwise, default row behavior is to have the min-widths for wrappers
-  @if list-has-value($params, "full") {
-    max-width: none;
+  @if $default-row-behavior == "default" {
+    margin-left: 0 - $gutter-width / 2;
+    margin-right: 0 - $gutter-width / 2;
   }
-  @else if $active-media == false {
-    @include wrapper;
-  }
-  @else if $active-media {
-    @warn "Cartilage Warning: Selectors don't need the row mixin within the media mixin. Instead, you should only include the row mixin with the selector outside of the media mixin.";
+  @else if $default-row-behavior == "wrapper" {
+    margin-left: auto;
+    margin-right: auto;
+    // If 'full' is passed as a parameter, ignore wrapper min-widths
+    // Otherwise, default row behavior is to have the min-widths for wrappers
+    @if list-has-value($params, "full") {
+      max-width: none;
+    }
+    @else if $active-media == false {
+      @include wrapper;
+    }
+    @else if $active-media {
+      @warn "Cartilage Warning: Selectors don't need the row mixin within the media mixin. Instead, you should only include the row mixin with the selector outside of the media mixin.";
+    }
   }
 }
 
