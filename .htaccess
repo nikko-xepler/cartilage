@@ -1,3 +1,3 @@
 RewriteEngine on
 RewriteCond %{REQUEST_URI} ^/$
-RewriteRule (.*) /cartilage/docs [R=301,L]
+RewriteRule (.*) http://nikko-xepler.github.io/cartilage/docs [R=301,L]
