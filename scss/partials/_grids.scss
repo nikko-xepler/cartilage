@@ -155,7 +155,6 @@ $word-ratios: ("half": 0.5, "one-half": 0.5, "third": 0.33333, "one-third": 0.33
   // Set styling rules for row element
   @include wrap;
   display: block;
-  width: 100%;
   @if $default-row-behavior == "default" {
     margin-left: 0 - $gutter-width / 2;
     margin-right: 0 - $gutter-width / 2;
@@ -178,6 +177,7 @@ $word-ratios: ("half": 0.5, "one-half": 0.5, "third": 0.33333, "one-third": 0.33
 }
 
 @mixin column-base {
+  position: relative;
   float: left;
   padding-left: $gutter-width / 2;
   padding-right: $gutter-width / 2;
@@ -231,7 +231,7 @@ $word-ratios: ("half": 0.5, "one-half": 0.5, "third": 0.33333, "one-third": 0.33
 ///
 /// **Accepted $params:**
 /// - `right`: Adds margin on the right of the element, intsead of the left.
-/// @param {Number | String} $width - The width of the column. See description of `column` mixin for accepted values.
+/// @param {Number | String} $width - The number of columns to offset by. See description of `column` mixin for accepted values.
 /// @param {String} $params... - Additional parameters. See description for accepted values.
 /// @see {mixin} column
 @mixin offset($width, $params...) {
@@ -243,4 +243,24 @@ $word-ratios: ("half": 0.5, "one-half": 0.5, "third": 0.33333, "one-third": 0.33
   @else {
     margin-left: $ratio * 100%;
   }
+}
+
+/// Mixin to "push" a column element to the right. Generally used in combination
+/// with the `pull` mixin
+/// @param {Number | String} $width - The distance to "push". See description of `column` mixin for accepted values.
+/// @see {mixin} column
+/// @see {mixin} pull
+@mixin push($width) {
+  $ratio: get-ratio-num($width);
+  left: $ratio * 100%;
+}
+
+/// Mixin to "pull" a column element to the left. Generally used in combination
+/// with the `push` mixin
+/// @param {Number | String} $width - The distance to "pull". See description of `column` mixin for accepted values.
+/// @see {mixin} column
+/// @see {mixin} push
+@mixin pull($width) {
+  $ratio: get-ratio-num($width);
+  right: $ratio * 100%;
 }
