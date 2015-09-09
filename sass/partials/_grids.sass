@@ -116,6 +116,8 @@ $word-ratios: ('half':0.5,'one-half':0.5,'third':0.3333333,'one-third':0.3333333
 
 @mixin wrapper()
     @extend %wrapper !optional
+    margin-left: auto
+    margin-right: auto
 
 
 
@@ -149,8 +151,6 @@ $word-ratios: ('half':0.5,'one-half':0.5,'third':0.3333333,'one-third':0.3333333
         margin-left: 0 - ($gutter-width / 2)
         margin-right: 0 - ($gutter-width / 2)
     @else if $default-row-behavior == "wrapper"
-        margin-left: auto
-        margin-right: auto
         // If 'full' is passed as a parameter, ignore wrapper min-widths
         // Otherwise, default row behavior is to have the min-widths for wrappers
         @if list-has-value($params,'full')
