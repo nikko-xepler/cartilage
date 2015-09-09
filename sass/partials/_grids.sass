@@ -114,10 +114,17 @@ $word-ratios: ('half':0.5,'one-half':0.5,'third':0.3333333,'one-third':0.3333333
 
 
 
-@mixin wrapper()
+@mixin inherit-wrapper-width
     @extend %wrapper !optional
+
+
+
+@mixin wrapper()
+    @include inherit-wrapper-width
     margin-left: auto
     margin-right: auto
+    padding-left: ($gutter-width / 2)
+    padding-right: ($gutter-width / 2)
 
 
 
@@ -156,7 +163,9 @@ $word-ratios: ('half':0.5,'one-half':0.5,'third':0.3333333,'one-third':0.3333333
         @if list-has-value($params,'full')
             max-width: none
         @else if $active-media == false
-            @include wrapper
+            @include inherit-wrapper-width
+            margin-left: auto
+            margin-right: auto
         @else if $active-media
             @warn "Cartilage Warning: Selectors don't need the row mixin within the media mixin. Instead, you should only include the row mixin with the selector outside of the media mixin."
 
