@@ -58,7 +58,7 @@ gulp.task('sass-convert-sassdoc', function(){
 
 // Watch the main sass folder for changes
 gulp.task('watch-sass', function() {
-    gulp.watch(SASSinput, ['sass'])
+    gulp.watch(SASSinput, ['sass','sass-to-scss'])
 })
 
 gulp.task('watch-sassdoc', function() {
