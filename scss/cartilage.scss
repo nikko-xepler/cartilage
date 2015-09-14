@@ -22,24 +22,3 @@ $mq-1_5dpr: "(-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi)";
 
 // Retina and High-res
 @media #{multi-media(($mq-retina, $mq-1_5dpr, $mq-1_3dpr, $mq-1_25dpr))} {}
-
-.example-row {
-  @include row;
-}
-
-.example-col1 {
-  @include column(3);
-  @include push(9);
-  background: red;
-}
-
-.example-col2 {
-  @include column(9);
-  @include pull(3);
-  background: green;
-}
-
-.example-col1,
-.example-col2 {
-  padding: 10px;
-}
