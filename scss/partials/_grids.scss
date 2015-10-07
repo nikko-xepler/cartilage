@@ -50,7 +50,7 @@ $word-ratios: ("half": 0.5, "one-half": 0.5, "third": 0.33333, "one-third": 0.33
   }
   @else if type-of($param) == string {
     @if map-get($word-ratios, $param) {
-      @debug "Matched word ratio";
+      // @debug "Matched word ratio"
       @return map-get($word-ratios, $param);
     }
     @else {
